@@ -1,0 +1,54 @@
+.vscode/
+# Miscellaneous
+*.class
+*.log
+*.pyc
+*.swp
+.DS_Store
+.atom/
+.build/
+.buildlog/
+.history
+.svn/
+.swiftpm/
+migrate_working_dir/
+
+# IntelliJ related
+*.iml
+*.ipr
+*.iws
+visitas_app/.idea/
+
+# The .vscode folder contains launch configuration and tasks you configure in
+# VS Code which you may wish to be included in version control, so this line
+# is commented out by default.
+#.vscode/
+
+# Flutter/Dart/Pub related
+visitas_app/**/doc/api/
+visitas_app/ios/Flutter/.last_build_id
+visitas_app/.dart_tool/
+visitas_app/.flutter-plugins-dependencies
+visitas_app/.pub-cache/
+visitas_app/.pub/
+visitas_app/build/
+visitas_app/coverage/
+
+# Symbolication related
+app.*.symbols
+
+# Obfuscation related
+app.*.map.json
+
+# Android Studio will place build artifacts here
+visitas_app//android/app/debug
+visitas_app//android/app/profile
+visitas_app//android/app/release
+
+# ================= BACKEND (NODE) =================
+backend/node_modules/
+backend/.env
+backend/dist/
+backend/build/
+npm-debug.log*
+yarn-error.log*

@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Test API Visitas</title>
+</head>
+<body>
+
+<h2>Probar Backend Visitas Comerciales</h2>
+
+<button onclick="verClientes()">Ver clientes</button>
+<button onclick="verVisitas()">Ver visitas</button>
+<button onclick="iniciarVisita()">Iniciar visita</button>
+<button onclick="finalizarVisita()">Finalizar visita</button>
+
+<pre id="resultado"></pre>
+
+<script>
+async function verClientes(){
+  const res = await fetch("http://localhost:3000/clientes");
+  const data = await res.json();
+  document.getElementById("resultado").textContent = JSON.stringify(data,null,2);
+}
+
+async function verVisitas(){
+  const res = await fetch("http://localhost:3000/visitas");
+  const data = await res.json();
+  document.getElementById("resultado").textContent = JSON.stringify(data,null,2);
+}
+
+async function iniciarVisita(){
+  const res = await fetch("http://localhost:3000/visitas/iniciar",{
+    method:"POST",
+    headers:{
+      "Content-Type":"application/json"
+    },
+    body: JSON.stringify({
+      usuario_id:1,
+      cliente_id:1,
+      lat:28.123,
+      lon:-16.123
+    })
+  });
+  const data = await res.json();
+  document.getElementById("resultado").textContent = JSON.stringify(data,null,2);
+}
+
+async function finalizarVisita(){
+  const res = await fetch("http://localhost:3000/visitas/finalizar",{
+    method:"PUT",
+    headers:{
+      "Content-Type":"application/json"
+    },
+    body: JSON.stringify({
+      usuario_id:1,
+      lat:28.123,
+      lon:-16.123,
+      notas:"Visita completada"
+    })
+  });
+  const data = await res.json();
+  document.getElementById("resultado").textContent = JSON.stringify(data,null,2);
+}
+</script>
+
+</body>
+</html>
