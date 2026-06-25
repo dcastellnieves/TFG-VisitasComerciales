@@ -1,4 +1,8 @@
-// login_screen
+// login_screen.dart
+// Pantalla de inicio de sesión.
+// Permite al usuario introducir su correo y contraseña, llama al servicio
+// de autenticación y redirige al home correspondiente según el rol
+// (admin → AdminHomeScreen, comercial → HomeScreen).
 import 'package:flutter/material.dart';
 import 'api_service.dart';
 import 'home_screen.dart';
@@ -11,9 +15,11 @@ class LoginScreen extends StatefulWidget {
 
 class _LoginScreenState extends State<LoginScreen> {
 
+  // Controladores de los campos de texto del formulario
   final emailCtrl = TextEditingController();
   final passCtrl = TextEditingController();
 
+  // Mensaje de error visible cuando falla la autenticación
   String? error;
 
   @override
@@ -51,11 +57,13 @@ class _LoginScreenState extends State<LoginScreen> {
             ElevatedButton(
               onPressed: () async {
                 try {
+                  // Llama al servicio de login con las credenciales introducidas
                   final user = await ApiService.login(
                     emailCtrl.text,
                     passCtrl.text,
                   );
 
+                  // Redirige según el rol devuelto por el backend
                   if (user['rol'] == 'admin') {
                     Navigator.pushReplacement(
                       context,

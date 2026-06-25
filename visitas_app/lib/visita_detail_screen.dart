@@ -1,3 +1,8 @@
+// visita_detail_screen.dart
+// Pantalla de detalle de una visita para el empleado comercial.
+// Muestra el mapa con los marcadores de inicio y fin de la visita,
+// los datos de fecha, hora, estado y duración, y permite editar
+// las notas asociadas a la visita.
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:intl/intl.dart';
@@ -14,7 +19,9 @@ class VisitaDetailScreen extends StatefulWidget {
 
 class _VisitaDetailScreenState extends State<VisitaDetailScreen> {
 
+  // Texto de las notas en su estado actual (guardado)
   late String notas;
+  // Indica si el campo de notas está en modo edición
   bool editandoNotas = false;
   late TextEditingController notasCtrl;
 
@@ -25,18 +32,21 @@ class _VisitaDetailScreenState extends State<VisitaDetailScreen> {
     notasCtrl = TextEditingController(text: notas);
   }
 
+  /// Convierte una cadena ISO de fecha a formato 'dd/MM/yyyy'.
   String formatearFecha(String? fecha) {
     if (fecha == null) return "-";
     final f = DateTime.parse(fecha).toLocal();
     return DateFormat('dd/MM/yyyy').format(f);
   }
 
+  /// Convierte una cadena ISO de fecha-hora a formato 'HH:mm'.
   String formatearHora(String? fechaHora) {
     if (fechaHora == null) return "-";
     final f = DateTime.parse(fechaHora).toLocal();
     return DateFormat('HH:mm').format(f);
   }
 
+  /// Persiste el texto del campo de notas en el backend y actualiza el estado local.
   void guardarNotas() async {
     try {
       await ApiService.actualizarNotas(
@@ -60,6 +70,7 @@ class _VisitaDetailScreenState extends State<VisitaDetailScreen> {
     }
   }
 
+  /// Descarta los cambios en el campo de notas y sale del modo edición.
   void cancelarEdicion() {
     setState(() {
       notasCtrl.text = notas;
@@ -261,6 +272,7 @@ class _VisitaDetailScreenState extends State<VisitaDetailScreen> {
   }
 
   // FILA LIMPIA
+  /// Construye una fila etiqueta-valor para la tarjeta de información de la visita.
   Widget _row(String label, String value) {
     return Padding(
       padding: EdgeInsets.symmetric(vertical: 4),
