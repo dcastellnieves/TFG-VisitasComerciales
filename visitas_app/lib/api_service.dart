@@ -1,3 +1,8 @@
+// api_service.dart
+// Capa de acceso a la API REST del backend.
+// Centraliza todas las llamadas HTTP, la gestión del token JWT y la
+// resolución de la URL base según el entorno de ejecución (web, emulador,
+// dispositivo físico). Todos los métodos son estáticos.
 import 'dart:convert';
 import 'package:http/http.dart' as http;
 import 'package:flutter/foundation.dart';
@@ -65,7 +70,9 @@ class ApiService {
     throw Exception(data["error"] ?? "Error login");
   }
 
-  // CLIENTES
+  // ── CLIENTES ─────────────────────────────────────────────────────
+
+  /// Obtiene el listado completo de clientes del sistema.
   static Future<List<dynamic>> getClientes() async {
     final res = await http.get(
       Uri.parse("$baseUrl/clientes"),
@@ -77,7 +84,9 @@ class ApiService {
     throw Exception("Error clientes");
   }
 
-  //  VISITAS
+  // ── VISITAS ──────────────────────────────────────────────────────
+
+  /// Obtiene el historial de visitas de un empleado por su id.
   static Future<List<dynamic>> getVisitas(int usuarioId) async {
     final res = await http.get(
       Uri.parse("$baseUrl/visitas/$usuarioId"),
@@ -89,6 +98,7 @@ class ApiService {
     throw Exception("Error visitas");
   }
 
+  /// Obtiene las visitas registradas hoy para el empleado indicado.
   static Future<List> getVisitasHoy(int usuarioId) async {
     final res = await http.get(
       Uri.parse("$baseUrl/visitas/hoy/$usuarioId"),
@@ -102,6 +112,7 @@ class ApiService {
     throw Exception("Error visitas hoy");
   }
 
+  /// Inicia una visita enviando el id de usuario, cliente y coordenadas GPS de inicio.
   static Future<Map<String, dynamic>> iniciarVisitaConUbicacion(
     int usuarioId,
     int clienteId,
@@ -126,6 +137,7 @@ class ApiService {
     throw Exception(data["error"] ?? "Error iniciar visita");
   }
 
+  /// Finaliza la visita activa del empleado sin coordenadas de fin.
   static Future<Map<String, dynamic>> finalizarVisita(
     int usuarioId,
     String notas,
@@ -146,6 +158,7 @@ class ApiService {
     throw Exception(data["error"] ?? "Error finalizar visita");
   }
 
+  /// Finaliza la visita activa del empleado con coordenadas GPS de fin y notas.
   static Future<Map<String, dynamic>> finalizarVisitaConUbicacion(
     int usuarioId,
     int clienteId,
@@ -172,11 +185,13 @@ class ApiService {
     throw Exception(data["error"] ?? "Error finalizar visita");
   }
 
+  /// Comprueba si el empleado tiene alguna visita en estado 'en_curso'.
   static Future<bool> hayVisitaActiva(int usuarioId) async {
     final visitas = await getVisitas(usuarioId);
     return visitas.any((v) => v["estado"] == "en_curso");
   }
 
+  /// Actualiza las notas de una visita identificada por su id.
   static Future<void> actualizarNotas(int visitaId, String notas) async {
     final res = await http.put(
       Uri.parse("$baseUrl/visitas/notas"),
@@ -192,7 +207,9 @@ class ApiService {
     }
   }
 
-  //  USUARIO
+  // ── USUARIO ──────────────────────────────────────────────────────
+
+  /// Obtiene los datos de perfil del usuario autenticado.
   static Future<Map<String, dynamic>> getUser(int id) async {
     final res = await http.get(
       Uri.parse("$baseUrl/usuario/$id"),
@@ -204,6 +221,7 @@ class ApiService {
     throw Exception("Error usuario");
   }
 
+  /// Actualiza el teléfono del usuario y, opcionalmente, su contraseña.
   static Future<void> updateUser(
     int id,
     String telefono,
@@ -225,7 +243,9 @@ class ApiService {
     }
   }
 
-  //  ADMIN
+  // ── ADMIN ────────────────────────────────────────────────────────
+
+  /// Obtiene las métricas y KPIs globales del sistema (solo admin).
   static Future<Map<String, dynamic>> getEstadisticasAdmin() async {
     final res = await http.get(
       Uri.parse("$baseUrl/admin/estadisticas"),
@@ -235,6 +255,7 @@ class ApiService {
     return jsonDecode(res.body);
   }
 
+  /// Crea un nuevo empleado con los datos y rol indicados (solo admin).
   static Future<void> crearEmpleado(
     String nombre,
     String email,
@@ -255,6 +276,7 @@ class ApiService {
     );
   }
 
+  /// Actualiza los datos de un empleado existente (solo admin).
   static Future<Map<String, dynamic>> actualizarEmpleado(
     int id,
     String nombre,
@@ -278,6 +300,7 @@ class ApiService {
     return jsonDecode(res.body);
   }
 
+  /// Crea un nuevo cliente con sus datos y coordenadas geográficas (solo admin).
   static Future crearCliente(
     String nombre,
     String direccion,
@@ -304,6 +327,7 @@ class ApiService {
     }
   }
 
+  /// Importa un listado de clientes en bloque (solo admin).
   static Future importarClientes(List clientes) async {
     final res = await http.post(
       Uri.parse("$baseUrl/admin/clientes/importar"),
@@ -320,6 +344,7 @@ class ApiService {
     return jsonDecode(res.body);
   }
 
+  /// Actualiza los datos de un cliente existente (solo admin).
   static Future actualizarCliente(
     int id,
     String nombre,
@@ -347,6 +372,7 @@ class ApiService {
     }
   }
 
+  /// Elimina una visita por su id (solo admin).
   static Future eliminarVisita(int id) async {
     await http.delete(
       Uri.parse("$baseUrl/admin/visitas/$id"),
@@ -354,6 +380,7 @@ class ApiService {
     );
   }
 
+  /// Obtiene el listado completo de empleados del sistema (solo admin).
   static Future<List> getEmpleados() async {
     final res = await http.get(
       Uri.parse("$baseUrl/admin/listaEmpleados"),
@@ -364,11 +391,14 @@ class ApiService {
   }
 
 
-  //  ASIGNACIONES
+  // ── ASIGNACIONES ─────────────────────────────────────────────────
+
+  /// Formatea una fecha como cadena 'yyyy-MM-dd' para las queries de la API.
   static String formatDate(DateTime d) {
     return "${d.year}-${d.month.toString().padLeft(2, '0')}-${d.day.toString().padLeft(2, '0')}";
   }
 
+  /// Obtiene los clientes asignados a un empleado concreto.
   static Future<List> getClientesPorUsuario(int userId) async {
     final res = await http.get(
       Uri.parse("$baseUrl/clientes/$userId"),
@@ -382,6 +412,7 @@ class ApiService {
     return jsonDecode(res.body);
   }
 
+  /// Crea asignaciones entre el empleado y la lista de clientes indicada (solo admin).
   static Future crearAsignaciones(int usuarioId, List clientes) async {
 
     final res = await http.post(
@@ -398,6 +429,7 @@ class ApiService {
     }
   }
 
+  /// Elimina la asignación entre un empleado y un cliente (solo admin).
   static Future eliminarAsignacion(int userId, int clienteId) async {
     await http.delete(
       Uri.parse("$baseUrl/admin/asignaciones"),
@@ -409,6 +441,7 @@ class ApiService {
     );
   }
 
+  /// Consulta visitas con filtros opcionales de empleado, cliente y fecha (solo admin).
   static Future<List> getVisitasAdminFiltrado({
     int? usuarioId,
     int? clienteId,
@@ -427,6 +460,7 @@ class ApiService {
     return jsonDecode(res.body);
   }
 
+  /// Obtiene las visitas asociadas a un cliente concreto filtrando en cliente.
   static Future<List> getVisitasCliente(int clienteId) async {
     final res = await http.get(
       Uri.parse("$baseUrl/admin/visitas"),

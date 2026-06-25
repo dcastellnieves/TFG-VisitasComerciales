@@ -1,3 +1,8 @@
+// home_screen.dart
+// Pantalla principal del empleado comercial.
+// Muestra la lista de clientes asignados para el día con indicadores
+// de estado (pendiente, en curso, visitado) y permite navegar al detalle
+// de cada cliente para iniciar o finalizar visitas.
 import 'package:flutter/material.dart';
 import 'api_service.dart';
 import 'login_screen.dart';
@@ -16,9 +21,12 @@ class HomeScreen extends StatefulWidget {
 
 class _HomeScreenState extends State<HomeScreen> {
 
+  // Lista de clientes asignados al empleado para hoy
   List clientes = [];
 
+  // Id del cliente con visita actualmente en curso (null si no hay ninguna)
   int? clienteEnCurso;
+  // Conjunto de ids de clientes cuya visita ya fue finalizada hoy
   Set<int> clientesVisitados = {};
 
   @override
@@ -27,6 +35,8 @@ class _HomeScreenState extends State<HomeScreen> {
     cargarDatosHome(); 
   }
 
+ /// Carga los clientes asignados y el estado de las visitas del día.
+ /// Determina qué cliente está en curso y cuáles han sido visitados.
  Future<void> cargarDatosHome() async {
   final userId = widget.user['id'];
 
@@ -55,6 +65,8 @@ class _HomeScreenState extends State<HomeScreen> {
   });
 }
 
+  /// Cierra la sesión del empleado y vuelve a la pantalla de login,
+  /// eliminando todo el historial de navegación.
   void logout() {
     Navigator.pushAndRemoveUntil(
       context,
@@ -239,6 +251,7 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 
+  /// Construye un ítem de leyenda con un color y etiqueta para la lista de estados.
   Widget _legendItem(Color color, String text) {
     return Row(
       mainAxisSize: MainAxisSize.min,

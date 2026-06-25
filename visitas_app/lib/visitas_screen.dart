@@ -1,4 +1,7 @@
-// Admin: administrar visitas
+// visitas_screen.dart
+// Pantalla de administración de visitas para el rol admin.
+// Permite listar todas las visitas del sistema con filtros por empleado,
+// cliente y fecha, y navegar al detalle de cada visita.
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'api_service.dart';
@@ -11,6 +14,7 @@ class VisitasScreen extends StatefulWidget {
 
 class _VisitasScreenState extends State<VisitasScreen> {
 
+  // Datos cargados desde el backend
   List visitas = [];
   List empleados = [];
   List clientes = [];
@@ -22,6 +26,7 @@ class _VisitasScreenState extends State<VisitasScreen> {
     cargar();
   }
 
+  /// Carga empleados, clientes y visitas (con el filtro de fecha activo si existe).
   Future<void> cargar() async {
 
     final emp = await ApiService.getEmpleados();
@@ -36,6 +41,7 @@ class _VisitasScreenState extends State<VisitasScreen> {
     setState(() => visitas = data);
   }
 
+  /// Muestra el selector de fecha y recarga las visitas filtradas por la fecha elegida.
   Future<void> seleccionarFecha() async {
     final picked = await showDatePicker(
       context: context,
@@ -51,6 +57,7 @@ class _VisitasScreenState extends State<VisitasScreen> {
   }
 
     // FORMATEAR FECHA
+  /// Convierte una cadena ISO de fecha a formato legible 'yyyy/MM/dd'.
   String formatearFecha(String? fecha) {
     if (fecha == null) return "-";
     final f = DateTime.parse(fecha).toLocal();
@@ -58,6 +65,7 @@ class _VisitasScreenState extends State<VisitasScreen> {
   }
 
   // FORMATEAR HORA
+  /// Convierte una cadena ISO de fecha-hora a formato de hora 'HH:mm'.
   String formatearHora(String? fechaHora) {
     if (fechaHora == null) return "-";
     final f = DateTime.parse(fechaHora).toLocal();
@@ -65,6 +73,8 @@ class _VisitasScreenState extends State<VisitasScreen> {
   }
 
   // FILTRO
+  /// Abre el diálogo de filtro avanzado por empleado, cliente y fecha,
+  /// y actualiza la lista de visitas con los resultados filtrados.
   void abrirFiltro() async {
     DateTime? fecha;
     int? usuarioId;

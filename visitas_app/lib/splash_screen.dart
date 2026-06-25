@@ -1,7 +1,11 @@
-// inicio
+// splash_screen.dart
+// Pantalla de bienvenida de la aplicación.
+// Muestra el logotipo y nombre de la app con un fondo degradado,
+// y ofrece el botón de acceso que navega hacia LoginScreen.
 import 'package:flutter/material.dart';
 import 'login_screen.dart';
 
+/// Pantalla estática de bienvenida. No mantiene estado.
 class SplashScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {

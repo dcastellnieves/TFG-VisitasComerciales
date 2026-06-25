@@ -1,4 +1,7 @@
-// Admin: obtener lista de clientes
+// clientes_screen.dart
+// Pantalla de gestión de clientes para el administrador.
+// Lista todos los clientes del sistema y permite crear nuevos, editar los
+// existentes e importar un listado en bloque desde un archivo CSV.
 import 'package:flutter/material.dart';
 import 'api_service.dart';
 import 'crear_cliente_screen.dart';
@@ -14,6 +17,7 @@ class ClientesScreen extends StatefulWidget {
 
 class _ClientesScreenState extends State<ClientesScreen> {
 
+  // Lista de clientes cargada desde el backend
   List clientes = [];
   bool loading = true;
 
@@ -23,6 +27,7 @@ class _ClientesScreenState extends State<ClientesScreen> {
     cargar();
   }
 
+  /// Carga el listado de clientes desde la API y actualiza el estado.
   Future<void> cargar() async {
     final data = await ApiService.getClientes();
     setState(() {
@@ -31,6 +36,8 @@ class _ClientesScreenState extends State<ClientesScreen> {
     });
   }
 
+  /// Abre el selector de archivos, parsea el CSV seleccionado y envía
+  /// los clientes al backend para su importación masiva.
   Future<void> importarCSV() async {
     try {
       final result = await FilePicker.platform.pickFiles(

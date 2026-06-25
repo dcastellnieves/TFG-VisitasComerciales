@@ -1,3 +1,8 @@
+// client_detail_screen.dart
+// Pantalla de detalle de un cliente para el empleado comercial.
+// Muestra la información del cliente (dirección, teléfono), permite
+// abrir Google Maps para la ruta, realizar una llamada telefónica,
+// e iniciar o finalizar la visita al cliente con captura de ubicación GPS.
 
 import 'package:flutter/material.dart';
 import 'api_service.dart';
@@ -16,7 +21,9 @@ class ClienteDetailScreen extends StatefulWidget {
 
 class _ClienteDetailScreenState extends State<ClienteDetailScreen> {
 
+  // true si el empleado tiene una visita en curso para ESTE cliente
   bool visitaEnCurso = false;
+  // true si el empleado tiene alguna visita en curso (para cualquier cliente)
   bool hayVisitaGlobal = false;
 
   @override
@@ -25,6 +32,8 @@ class _ClienteDetailScreenState extends State<ClienteDetailScreen> {
     comprobar();
   }
 
+  /// Consulta el estado actual de las visitas del empleado para determinar
+  /// si hay una visita en curso para este cliente o para cualquier otro.
   Future<void> comprobar() async {
     final visitas = await ApiService.getVisitas(widget.user['id']);
 
@@ -37,6 +46,7 @@ class _ClienteDetailScreenState extends State<ClienteDetailScreen> {
     });
   }
 
+  /// Abre Google Maps con la dirección del cliente para navegación externa.
   Future<void> abrirMaps() async {
     final url = Uri.parse(
       "https://www.google.com/maps/search/?api=1&query=${widget.cliente['direccion']}"
@@ -44,6 +54,7 @@ class _ClienteDetailScreenState extends State<ClienteDetailScreen> {
     await launchUrl(url, mode: LaunchMode.externalApplication);
   }
 
+  /// Inicia una llamada telefónica al número del cliente.
   Future<void> llamar() async {
     final url = Uri.parse("tel:${widget.cliente['telefono']}");
     await launchUrl(url);
@@ -248,6 +259,7 @@ class _ClienteDetailScreenState extends State<ClienteDetailScreen> {
   }
 
 
+  /// Construye un botón de acción con icono y etiqueta (p.ej. "Cómo llegar", "Llamar").
   Widget _tileButton({
     required IconData icon,
     required String label,

@@ -1,4 +1,7 @@
-// Admin: pantalla para asignar clientes a empleados
+// asignaciones_screen.dart
+// Pantalla de gestión de asignaciones para el administrador.
+// Permite seleccionar un empleado, ver y modificar los clientes que tiene
+// asignados (añadir/eliminar), y guardar los cambios en el backend.
 import 'package:flutter/material.dart';
 import 'api_service.dart';
 import 'seleccionar_clientes_screen.dart';
@@ -10,10 +13,14 @@ class AsignacionesScreen extends StatefulWidget {
 
 class _AsignacionesScreenState extends State<AsignacionesScreen> {
 
+  // Lista de empleados disponibles para el selector
   List empleados = [];
+  // Id del empleado actualmente seleccionado en el dropdown
   int? empleadoId;
 
+  // Clientes mostrados en pantalla (pueden diferir de los originales tras edición)
   List clientesSeleccionados = [];
+  // Clientes que ya tenía asignados el empleado antes de editar
   List clientesExistentes = [];
 
   // estado de visitas por cliente
@@ -25,12 +32,15 @@ class _AsignacionesScreenState extends State<AsignacionesScreen> {
     cargarEmpleados();
   }
 
+  /// Carga el listado de empleados desde el backend.
   void cargarEmpleados() async {
     final data = await ApiService.getEmpleados();
     setState(() => empleados = data);
   }
 
   // CARGAR ASIGNACIONES + VISITAS
+  /// Carga los clientes asignados al empleado seleccionado y el estado de sus
+  /// visitas del día, para colorear cada fila según el estado (en curso / finalizada).
   Future<void> cargarAsignaciones() async {
     if (empleadoId == null) return;
 
@@ -52,7 +62,8 @@ class _AsignacionesScreenState extends State<AsignacionesScreen> {
   }
 
   //SELECCIONAR CLIENTES
-
+  /// Navega a la pantalla de selección de clientes y añade los seleccionados
+  /// a la lista local evitando duplicados.
   Future<void> seleccionarClientes() async {
     final seleccion = await Navigator.push(
       context,
@@ -72,6 +83,8 @@ class _AsignacionesScreenState extends State<AsignacionesScreen> {
     }
   }
 
+  /// Calcula las diferencias entre la lista original y la editada,
+  /// crea las asignaciones nuevas y elimina las que se han quitado.
   Future<void> guardar() async {
     if (empleadoId == null) return;
 

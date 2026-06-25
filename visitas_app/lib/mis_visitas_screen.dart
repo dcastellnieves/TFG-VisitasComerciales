@@ -1,4 +1,7 @@
-// Mis visitar: se muestras las visitas del empleado
+// mis_visitas_screen.dart
+// Pantalla de historial de visitas del empleado comercial.
+// Muestra todas las visitas realizadas por el empleado con soporte
+// de filtrado por nombre de cliente y por fecha.
 import 'package:flutter/material.dart';
 import 'api_service.dart';
 import 'package:intl/intl.dart';
@@ -15,9 +18,12 @@ class MisVisitasScreen extends StatefulWidget {
 
 class _MisVisitasScreenState extends State<MisVisitasScreen> {
 
+  // Lista completa de visitas del empleado
   List visitas = [];
+  // Lista filtrada que se muestra en pantalla
   List visitasFiltradas = [];
 
+  // Valores actuales de los filtros aplicados
   String? filtroCliente;
   DateTime? filtroFecha;
 
@@ -27,7 +33,8 @@ class _MisVisitasScreenState extends State<MisVisitasScreen> {
     cargarVisitas();
   }
 
-  //  CARGAR VISITAS
+  /// Carga el historial de visitas del empleado desde la API,
+  /// las ordena por fecha descendente y las asigna a ambas listas.
   void cargarVisitas() async {
     final data = await ApiService.getVisitas(widget.user['id']);
 
@@ -42,6 +49,7 @@ class _MisVisitasScreenState extends State<MisVisitasScreen> {
   }
 
   //  FORMATEAR FECHA
+  /// Convierte una cadena ISO de fecha a formato legible 'yyyy/MM/dd'.
   String formatearFecha(String? fecha) {
     if (fecha == null) return "-";
     final f = DateTime.parse(fecha).toLocal();
@@ -49,19 +57,23 @@ class _MisVisitasScreenState extends State<MisVisitasScreen> {
   }
 
   //  FORMATEAR HORA
+  /// Convierte una cadena ISO de fecha-hora a formato de hora 'HH:mm'.
   String formatearHora(String? fechaHora) {
     if (fechaHora == null) return "-";
     final f = DateTime.parse(fechaHora).toLocal();
     return DateFormat('HH:mm').format(f);
   }
 
-  // COMPARAR  DÍA 
+  // COMPARAR  DÍA
+  /// Comprueba si dos fechas corresponden al mismo día (ignora la hora).
   bool mismaFecha(DateTime a, DateTime b) {
     return a.year == b.year &&
            a.month == b.month &&
            a.day == b.day;
   }
 
+  /// Aplica los filtros activos (cliente y fecha) sobre la lista completa
+  /// de visitas y actualiza [visitasFiltradas].
   void aplicarFiltros() {
 
     List temp = visitas;
@@ -87,6 +99,8 @@ class _MisVisitasScreenState extends State<MisVisitasScreen> {
   }
 
   // FILTRO
+  /// Muestra el diálogo modal de filtros por cliente y fecha.
+  /// Al aplicar, actualiza los filtros activos y recalcula la lista filtrada.
   void abrirFiltroModal() {
 
     String? clienteTemp = filtroCliente;

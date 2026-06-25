@@ -1,4 +1,8 @@
-// Admin: estadísticas
+// estadisticas_screen.dart
+// Pantalla de estadísticas y KPIs para el administrador.
+// Muestra indicadores clave del sistema (visitas hoy, semana, empleados,
+// clientes), el ranking de los 5 empleados con más visitas y un gráfico
+// de barras con las visitas de los últimos 7 días.
 import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:flutter/material.dart';
 import 'api_service.dart';
@@ -9,11 +13,13 @@ class EstadisticasScreen extends StatefulWidget {
 }
 
 class _EstadisticasScreenState extends State<EstadisticasScreen> {
+  // Contadores de KPIs principales
   int visitasHoy = 0;
   int visitasSemana = 0;
   int empleadosActivos = 0;
   int clientesTotal = 0;
 
+  // Datos del ranking de empleados y gráfico de visitas por día
   List ranking = [];
   List visitasSemanaData = [];
 
@@ -25,6 +31,8 @@ class _EstadisticasScreenState extends State<EstadisticasScreen> {
     cargar();
   }
 
+  /// Obtiene las métricas del backend y actualiza los valores de los KPIs,
+  /// el ranking y los datos del gráfico de barras semanal.
   Future<void> cargar() async {
     try {
       final data = await ApiService.getEstadisticasAdmin();
@@ -208,6 +216,8 @@ class _EstadisticasScreenState extends State<EstadisticasScreen> {
   }
 
   // ================= KPI =================
+  /// Construye una tarjeta KPI con icono, valor numérico y título.
+  /// Adapta el tamaño del icono para web y móvil.
   Widget _kpi(String title, int value, IconData icon, Color color) {
     final isWeb = MediaQuery.of(context).size.width > 600;
 

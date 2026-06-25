@@ -1,4 +1,8 @@
-// Home del Admin
+// admin_home_screen.dart
+// Pantalla principal del administrador.
+// Muestra un panel de acceso rápido con tarjetas de navegación hacia
+// los módulos de administración: estadísticas, empleados, clientes,
+// asignaciones y visitas. Incluye drawer lateral con perfil y cierre de sesión.
 import 'package:flutter/material.dart';
 import '../estadisticas_screen.dart';
 import 'empleados_screen.dart';
@@ -8,11 +12,14 @@ import 'splash_screen.dart';
 import 'asignaciones_screen.dart';
 import 'visitas_screen.dart';
 
+/// Widget raíz del panel de administración. Sin estado propio.
 class AdminHomeScreen extends StatelessWidget {
   final Map<String, dynamic> user;
 
   const AdminHomeScreen({required this.user});
 
+  /// Cierra la sesión del admin y vuelve a SplashScreen,
+  /// eliminando todo el historial de navegación.
   void logout(BuildContext context) {
     Navigator.pushAndRemoveUntil(
       context,
@@ -218,6 +225,8 @@ class AdminHomeScreen extends StatelessWidget {
     );
   }
 
+  /// Construye una tarjeta de acceso rápido con icono, título y acción de navegación.
+  /// Adapta el tamaño del padding e icono para web y móvil.
   Widget _tile(
     BuildContext context, {
     required IconData icon,
