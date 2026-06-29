@@ -4,6 +4,7 @@
 // y ofrece el botón de acceso que navega hacia LoginScreen.
 import 'package:flutter/material.dart';
 import 'login_screen.dart';
+import 'mockups/mockup_screens.dart';
 
 /// Pantalla estática de bienvenida. No mantiene estado.
 class SplashScreen extends StatelessWidget {
@@ -42,6 +43,24 @@ class SplashScreen extends StatelessWidget {
                 );
               },
               child: Text("Iniciar"),
+            ),
+
+            SizedBox(height: 12),
+
+            OutlinedButton(
+              onPressed: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (_) => const MockupsIndexScreen(),
+                  ),
+                );
+              },
+              style: OutlinedButton.styleFrom(
+                foregroundColor: Colors.white,
+                side: const BorderSide(color: Colors.white70),
+              ),
+              child: const Text("Ver mockups"),
             ),
 
           ],
